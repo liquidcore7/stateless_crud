@@ -8,5 +8,5 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1
 lazy val root = (project in file("."))
   .enablePlugins(Common, PlayScala)
   .settings(
-    name := """play-scala-rest-api-example""",
+    name := "stateless-crud",
   )
