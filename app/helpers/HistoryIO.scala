@@ -8,13 +8,13 @@ trait HistoryIO[E <: CrudEntity[_]] {
 
   def read(history: String)(implicit toModel: (Long, String) => E): HistoryParser[E] = {
     new HistoryParser(
-      GzipConverter.combine(UrlEncodeConverter)
+      GzipConverter.combine(Base64Encoder)
         .inverse(history)
     )
   }
 
   def write(hp: HistoryParser[E], newHistory: Set[E]): String = {
-    UrlEncodeConverter.combine(GzipConverter)
+    GzipConverter.combine(Base64Encoder)
       .direct(hp.inverse(newHistory))
   }
 

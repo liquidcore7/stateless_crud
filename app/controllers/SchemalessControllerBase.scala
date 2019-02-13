@@ -1,6 +1,6 @@
 package controllers
 
-import helpers.{GzipConverter, HistoryIO, HistoryParser, UrlEncodeConverter}
+import helpers._
 import javax.inject.Inject
 import models._
 import play.api.mvc.{AbstractController, ControllerComponents}
@@ -17,7 +17,7 @@ class SchemalessControllerBase @Inject() (cc: ControllerComponents) extends Abst
 
     val historyParser: HistoryParser[SchemalessEntity] = read(history)
     val targetId: Long = maybeId.getOrElse(historyParser.lastId + 1)
-    val targetElement: String = maybeElement.map(UrlEncodeConverter.inverse).getOrElse("")
+    val targetElement: String = maybeElement.getOrElse("")
     val entity: SchemalessEntity = SchemalessEntity(targetId, targetElement)
 
     val result: String = operation match {
@@ -26,7 +26,7 @@ class SchemalessControllerBase @Inject() (cc: ControllerComponents) extends Abst
 
       case _: MutatingOperation =>
         val nextState = StatefulRequest[SchemalessEntity, OP](historyParser.history, entity).nextState
-        GzipConverter.combine(UrlEncodeConverter)
+        GzipConverter.combine(Base64Encoder)
           .direct(historyParser.inverse(nextState))
     }
 
